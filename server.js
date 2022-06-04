@@ -3,6 +3,8 @@ const fileUpload = require('express-fileupload');
 const transcodeFile = require('./lib/transcodeFile');
 const removeTempFile = require('./lib/removeTempFile');
 const cors = require('cors');
+const fs = require('fs');
+const fsPromises = fs.promises;
 
 const app = express();
 app.use(cors());
@@ -27,6 +29,18 @@ app.post('/upload', async (req, res) => {
 		await transcodeFile(tempPath, outputPath);
 		await removeTempFile(tempPath);
 		res.json({ fileName: file.name, filePath: outputPath });
+	} catch (err) {
+		console.error(err);
+	}
+});
+
+app.get('/files', async (req, res) => {
+	try {
+		const path = `${__dirname}/public/uploads/video`;
+		const files = await fsPromises.readdir(path);
+		// for (const file of files)
+		console.log(files);
+		res.json(files);
 	} catch (err) {
 		console.error(err);
 	}
