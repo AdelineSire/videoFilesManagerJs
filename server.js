@@ -2,8 +2,10 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const transcodeFile = require('./lib/transcodeFile');
 const removeTempFile = require('./lib/removeTempFile');
+const cors = require('cors');
 
 const app = express();
+app.use(cors());
 app.use(fileUpload());
 
 app.post('/upload', async (req, res) => {
@@ -30,7 +32,7 @@ app.post('/upload', async (req, res) => {
 	}
 });
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3002;
 app.listen(port, () => {
 	console.log(`Server is running on port ${port}`);
 });
