@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 import Row from 'react-bootstrap/Row';
 import Form from 'react-bootstrap/Form';
@@ -8,12 +8,12 @@ import Message from './Message';
 import Progress from './Progress';
 import axios from 'axios';
 
-const apiUrl = process.env.API_URL || 'http://localhost:3002';
-
-const FileUpload = () => {
+const FileUpload = ({ uploaded, setUploaded }) => {
 	const [file, setFile] = useState('');
 	const [message, setMessage] = useState('');
 	const [uploadPercentage, setUploadPercentage] = useState(0);
+	const fileRef = useRef('');
+	const apiUrl = process.env.API_URL || 'http://localhost:3002';
 
 	const onChange = (e) => {
 		setFile(e.target.files[0]);
@@ -25,7 +25,7 @@ const FileUpload = () => {
 		formData.append('file', file);
 
 		try {
-			await axios.post(`${apiUrl}/upload`, formData, {
+			const res = await axios.post(`${apiUrl}/upload`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},
@@ -37,14 +37,19 @@ const FileUpload = () => {
 					);
 				},
 			});
+			console.log('res.status', res.status);
+			fileRef.current.value = '';
+			console.log(fileRef);
 
-			// Clear percentage
-			setTimeout(() => setUploadPercentage(0), 3000);
-			setTimeout(() => setFile(''), 3000);
-			setMessage('File Uploaded');
+			setMessage('La vidéo a été enregistrée');
+			setTimeout(() => {
+				setUploadPercentage(0);
+				setMessage('');
+				setUploaded(!uploaded);
+			}, 2000);
 		} catch (err) {
 			if (err.response.status === 500) {
-				setMessage('There was a problem with the server');
+				setMessage('Il y a eu un problème avec le serveur');
 			} else {
 				setMessage(err.response.data.msg);
 			}
@@ -53,14 +58,15 @@ const FileUpload = () => {
 	};
 
 	return (
-		<Row>
+		<Row className='mb-5 d-flex flex-column align-items-center'>
+			<h2 className='mb-4'>Télécharger une vidéo</h2>
 			{message ? <Message msg={message} /> : null}
 			<Form onSubmit={onSubmit}>
 				<Form.Group controlId='formFile' className='mb-3'>
-					<Form.Control type='file' onChange={onChange} />
+					<Form.Control ref={fileRef} type='file' onChange={onChange} />
 				</Form.Group>
 				<Progress percentage={uploadPercentage} />
-				<Button type='submit' variant='primary'>
+				<Button type='submit' variant='primary' className='m-3'>
 					Upload
 				</Button>
 			</Form>
