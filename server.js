@@ -1,14 +1,20 @@
 const express = require('express');
-const fileUpload = require('express-fileupload');
-const transcodeFile = require('./lib/transcodeFile');
-const removeTempFile = require('./lib/removeTempFile');
-const cors = require('cors');
 const fs = require('fs');
 const fsPromises = fs.promises;
+const fileUpload = require('express-fileupload');
+const cors = require('cors');
+
+const transcodeFile = require('./lib/transcodeFile');
+const removeTempFile = require('./lib/removeTempFile');
 
 const app = express();
 app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static('public'));
 app.use(fileUpload());
+
+const apiUrl = process.env.API_URL || 'http://localhost:3002';
 
 app.post('/upload', async (req, res) => {
 	if (req.files === null) {
@@ -28,7 +34,7 @@ app.post('/upload', async (req, res) => {
 		});
 		await transcodeFile(tempPath, outputPath);
 		await removeTempFile(tempPath);
-		res.json({ fileName: file.name, filePath: outputPath });
+		res.send();
 	} catch (err) {
 		console.error(err);
 	}
@@ -36,9 +42,13 @@ app.post('/upload', async (req, res) => {
 
 app.get('/files', async (req, res) => {
 	try {
-		const path = `${__dirname}/public/uploads/video`;
-		const files = await fsPromises.readdir(path);
-		// for (const file of files)
+		const path = `${__dirname}/public/uploads/video/`;
+		const files = [];
+		const fileNames = await fsPromises.readdir(path);
+		for (const fileName of fileNames) {
+			const filePath = `${apiUrl}/uploads/video/${fileName}`;
+			files.push({ fileName, filePath });
+		}
 		console.log(files);
 		res.json(files);
 	} catch (err) {
