@@ -58,7 +58,7 @@ const FileUpload = ({ uploaded, setUploaded }) => {
 	};
 
 	return (
-		<Row className='mb-5 d-flex flex-column align-items-center'>
+		<Row className='mb-5 p-1 d-flex flex-column align-items-center'>
 			<h2 className='mb-4'>Télécharger une vidéo</h2>
 			{message ? <Message msg={message} /> : null}
 			<Form onSubmit={onSubmit}>
@@ -66,7 +66,7 @@ const FileUpload = ({ uploaded, setUploaded }) => {
 					<Form.Control ref={fileRef} type='file' onChange={onChange} />
 				</Form.Group>
 				<Progress percentage={uploadPercentage} />
-				<Button type='submit' variant='primary' className='m-3'>
+				<Button type='submit' variant='primary' className='m-3 p-2'>
 					Upload
 				</Button>
 			</Form>

@@ -13,7 +13,7 @@ const App = () => {
 
 	return (
 		<Container className='text-center'>
-			<h1 className='m-5'>Video Manager</h1>
+			<h1 className='m-5 fw-bold fst-italic'>Video Manager</h1>
 			<FileUpload setUploaded={setUploaded} uploaded={uploaded} />
 			<FilesList setSelectedFile={setSelectedFile} uploaded={uploaded} />
 			{selectedFile && <Player file={selectedFile} />}

@@ -12,13 +12,21 @@ const Player = ({ file }) => {
 		setIsplaying(!isPlaying);
 	};
 	return (
-		<Row className='mb-5 d-flex flex-column align-items-center'>
+		<Row className='mb-5  d-flex flex-column align-items-center'>
 			<video ref={vidRef}>
 				<source src={file.filePath} type='video/mp4' />
 			</video>
 
-			<Button variant='primary' className='m-3 p-2' onClick={handlePlayVideo}>
-				{isPlaying ? <PauseFill /> : <PlayFill />}
+			<Button
+				variant='primary'
+				className='m-3 p-2 w-25'
+				onClick={handlePlayVideo}
+			>
+				{isPlaying ? (
+					<PauseFill className='fs-3' />
+				) : (
+					<PlayFill className='fs-3' />
+				)}
 			</Button>
 		</Row>
 	);

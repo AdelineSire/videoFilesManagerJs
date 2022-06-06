@@ -21,12 +21,13 @@ const FilesList = ({ setSelectedFile, uploaded }) => {
 	return (
 		<Row className='mb-5 d-flex flex-column align-items-center'>
 			<h2 className='mb-4'>Lire une vidéo</h2>
-			<ListGroup>
+			<ListGroup className='p-3'>
 				{filesList.map((file) => (
 					<ListGroup.Item
 						key={file.fileName}
 						action
 						onClick={() => setSelectedFile(file)}
+						className='m-0'
 					>
 						{file.fileName}
 					</ListGroup.Item>
